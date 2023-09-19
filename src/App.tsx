@@ -1,33 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
+import Item from './components/Item'
+import { SimpleGrid } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { listAPI, NftModel } from './apis/list'
 
 function App() {
-  const [count, setCount] = useState(0)
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  const [list, setList] = useState<NftModel[]>([]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    (async () => {
+      const resp = await listAPI.getList('goerli', '0x85fD692D2a075908079261F5E351e7fE0267dB02')
+      setList(resp.data.nfts);
+      console.log(resp, 'hey')
+    })();
 
+  }, [])
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        Luke Project
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <SimpleGrid columns={{ sm: 2, md: 4 }} spacing='40px'>
+        {/* TODO infinite scroll */}
+        {list.map(it => {
+          return <Item key={it.identifier} imageSrc={it.image_url} name={it.name}></Item>
+        })}
+      </SimpleGrid>
+
     </>
   )
 }

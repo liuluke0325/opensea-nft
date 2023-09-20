@@ -12,6 +12,8 @@ export type NftModel = {
 
 }
 
+
+
 export const listAPI = {
 
     getNFTList: (chain: string, walletAddress: string) => {
@@ -23,7 +25,7 @@ export const listAPI = {
         })
     },
     getNFT: (chain: string, contractAddress: string, identifier: string) => {
-        return axios.get(`https://testnets-api.opensea.io/v2/chain/${chain}/contract/${contractAddress}/nfts/${identifier}`)
+        return axios.get<{ nft: NftModel }>(`https://testnets-api.opensea.io/v2/chain/${chain}/contract/${contractAddress}/nfts/${identifier}`)
     }
 
 }

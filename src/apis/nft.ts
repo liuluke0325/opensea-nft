@@ -1,5 +1,3 @@
-import axios from "axios";
-
 
 export type NftModel = {
     image_url: string
@@ -8,8 +6,6 @@ export type NftModel = {
     collection: string,
     description: string
     contract: string;
-
-
 }
 
 
@@ -17,7 +13,10 @@ export type NftModel = {
 export const nftAPI = {
 
     getNFTList: (chain: string, walletAddress: string) => {
-        return `https://testnets-api.opensea.io/v2/chain/${chain}/account/${walletAddress}/nfts`
+        return `/chain/${chain}/account/${walletAddress}/nfts`
+    },
+    getNFT: (chain: string, contractAddress: string, identifier: string) => {
+        return `/chain/${chain}/contract/${contractAddress}/nfts/${identifier}`
     }
 
 }

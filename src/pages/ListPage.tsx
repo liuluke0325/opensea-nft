@@ -1,14 +1,12 @@
 import { Box, CircularProgress, SimpleGrid } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { NftModel } from "../apis/list";
 import Item from "../components/Item";
-import axios from "axios";
 import useSWRInfinite from "swr/infinite";
-import { nftAPI } from "../apis/nft";
+import { NftModel, nftAPI } from "../apis/nft";
 import useInfiniteScroll from "react-infinite-scroll-hook";
+import { getFetcher } from "../utils/axios";
 
-const fetcher = (url: string) => axios.get(url).then(res => res.data)
 const getKey = (pageIndex: number, previousPageData: { next: string, nfts: NftModel[] }) => {
     if (previousPageData && !previousPageData.nfts.length) return null // reached the end
     // first page, we don't have `previousPageData`
@@ -19,7 +17,7 @@ const getKey = (pageIndex: number, previousPageData: { next: string, nfts: NftMo
 
 const ListPage = () => {
 
-    const { isLoading, data, isValidating, error, setSize } = useSWRInfinite<{ nfts: NftModel[], next: string }>(getKey, fetcher)
+    const { isLoading, data, isValidating, error, setSize } = useSWRInfinite<{ nfts: NftModel[], next: string }>(getKey, getFetcher)
 
     const navigate = useNavigate();
 
@@ -43,12 +41,8 @@ const ListPage = () => {
 
 
     return <SimpleGrid columns={{ sm: 2, md: 4 }} spacing='40px'>
-        {/* TODO infinite scroll */}
-        {/* {data.map(it => {
-            return <Item key={`${it.contract}-${it.identifier}`} onClick={(contract, id) => navigate(`/detail/${contract}/${id}`)} data={it}></Item>
-        })} */}
+
         {data?.map((it) => {
-            // `data` is an array of each page's API response.
             return it.nfts.map((it) => <Item width="100%" key={`${it.contract}-${it.identifier}`} onClick={(contract, id) => navigate(`/detail/${contract}/${id}`)} data={it}></Item>)
         })}
         {(isLoading || hasNextPage) && (

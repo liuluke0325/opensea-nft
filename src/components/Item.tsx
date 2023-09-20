@@ -3,11 +3,12 @@ import { NftModel } from "../apis/list";
 type ItemProps = {
     onClick?: (contract: string, identifier: string) => void
     data: NftModel
+    width?: string
 }
-const Item = ({ data, onClick }: ItemProps) => {
+const Item = ({ data, onClick, width }: ItemProps) => {
 
     const { image_url, name, contract, identifier } = data;
-    return <Card maxW='sm' align='center' _hover={{ cursor: "pointer" }} onClick={() => onClick && onClick(contract, identifier)}>
+    return <Card w={width} align='center' _hover={{ cursor: "pointer" }} onClick={() => onClick && onClick(contract, identifier)}>
         <CardBody>
             <Image
                 src={image_url}

@@ -1,21 +1,23 @@
-import { Image, Card, CardBody, CardFooter, Divider, Heading, Stack, Text } from "@chakra-ui/react";
+import { Image, Card, CardBody, Heading } from "@chakra-ui/react";
+import { NftModel } from "../apis/list";
 type ItemProps = {
-    imageSrc: string;
-    name: string
+    onClick?: (contract: string, identifier: string) => void
+    data: NftModel
 }
-const Item = ({ imageSrc, name }: ItemProps) => {
+const Item = ({ data, onClick }: ItemProps) => {
 
-
-    return <Card maxW='sm'>
+    const { image_url, name, contract, identifier } = data;
+    return <Card maxW='sm' align='center' _hover={{ cursor: "pointer" }} onClick={() => onClick && onClick(contract, identifier)}>
         <CardBody>
+
             <Image
-                src={imageSrc}
+                src={image_url}
                 alt={name}
                 borderRadius='lg'
             />
-            <Stack mt='6' spacing='3'>
-                <Heading color='blue.600' size='md'>{name}</Heading>
-            </Stack>
+
+            <Heading color='blue.600' size='md' mt='6'>{name}</Heading>
+
         </CardBody>
     </Card>
 }

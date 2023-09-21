@@ -1,4 +1,4 @@
-# nft-project
+# opensea-nft
 
 A project demo using react + typescript + web3 + integrate with opensea api (Testnet)
 

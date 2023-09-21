@@ -7,12 +7,14 @@ import { NftModel, nftAPI } from "../apis/nft";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { getFetcher } from "../utils/axios";
 
+const PAGE_LIMIT = 20;
 const getKey = (pageIndex: number, previousPageData: { next: string, nfts: NftModel[] }) => {
+
     if (previousPageData && !previousPageData.nfts.length) return null // reached the end
     // first page, we don't have `previousPageData`
     const baseUrl = nftAPI.getNFTList('goerli', '0x85fD692D2a075908079261F5E351e7fE0267dB02');
-    if (pageIndex === 0) return baseUrl + `?limit=10`
-    return baseUrl + `?next=${previousPageData.next}&limit=10`                    // SWR key
+    if (pageIndex === 0) return baseUrl + `?limit=${PAGE_LIMIT}`
+    return baseUrl + `?next=${previousPageData.next}&limit=${PAGE_LIMIT}`                    // SWR key
 }
 
 const ListPage = () => {
@@ -34,23 +36,27 @@ const ListPage = () => {
         hasNextPage,
         onLoadMore,
         disabled: !!error,
-        rootMargin: '0px 0px 400px 0px', // view point to trigger
+        rootMargin: '0px 0px 400px 0px',
     });
 
 
 
 
-    return <SimpleGrid columns={{ sm: 2, md: 4 }} spacing='40px'>
+    return <>
+        <SimpleGrid columns={{ sm: 2, md: 4 }} spacing='40px'>
+            {data?.map((it) => {
+                return it.nfts.map((it) => <Item width="100%" key={`${it.contract}-${it.identifier}`} onClick={(contract, id) => navigate(`/detail/${contract}/${id}`)} data={it}></Item>)
+            })}
+        </SimpleGrid>
+        {
+            (isLoading || hasNextPage) && (
+                <Box ref={sentryRef}>
+                    <CircularProgress isIndeterminate color='green.300' />
+                </Box>
+            )
+        }</>
 
-        {data?.map((it) => {
-            return it.nfts.map((it) => <Item width="100%" key={`${it.contract}-${it.identifier}`} onClick={(contract, id) => navigate(`/detail/${contract}/${id}`)} data={it}></Item>)
-        })}
-        {(isLoading || hasNextPage) && (
-            <Box ref={sentryRef}>
-                <CircularProgress isIndeterminate color='green.300' />
-            </Box>
-        )}
-    </SimpleGrid>
+
 }
 
 export default ListPage

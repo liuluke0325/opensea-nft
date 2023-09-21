@@ -7,20 +7,21 @@ import { PAGINATION_LIMIT, WALLET_ADDRESS, api } from "../apis/api";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { getFetcher } from "../utils/axios";
 import { NftModel } from "../types/nftModel";
+import { useWeb3 } from "../hooks/useWeb3";
 
-const getKey = (pageIndex: number, previousPageData: { next: string, nfts: NftModel[] }) => {
 
-    if (previousPageData && !previousPageData.nfts.length) return null // reached the end
-
-    const baseUrl = api.getNFTList('goerli', WALLET_ADDRESS);
-
-    // first page
-    if (pageIndex === 0) return baseUrl + `?limit=${PAGINATION_LIMIT}`
-    // next page
-    return baseUrl + `?next=${previousPageData.next}&limit=${PAGINATION_LIMIT}`                    // SWR key
-}
 
 const ListPage = () => {
+    const { address } = useWeb3();
+
+    const getKey = (pageIndex: number, previousPageData: { next: string, nfts: NftModel[] }) => {
+        if (previousPageData && !previousPageData.nfts.length) return null // reached the end
+        const baseUrl = api.getNFTList('goerli', address ?? WALLET_ADDRESS); // use hardcode one if can't get address
+        // first page
+        if (pageIndex === 0) return baseUrl + `?limit=${PAGINATION_LIMIT}`
+        // next page
+        return baseUrl + `?next=${previousPageData.next}&limit=${PAGINATION_LIMIT}`
+    }
 
     const { isLoading, data, isValidating, error, setSize } = useSWRInfinite<{ nfts: NftModel[], next: string }>(getKey, getFetcher)
 

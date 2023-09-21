@@ -3,18 +3,21 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Item from "../components/Item";
 import useSWRInfinite from "swr/infinite";
-import { NftModel, nftAPI } from "../apis/nft";
+import { PAGINATION_LIMIT, WALLET_ADDRESS, api } from "../apis/api";
 import useInfiniteScroll from "react-infinite-scroll-hook";
 import { getFetcher } from "../utils/axios";
+import { NftModel } from "../types/nftModel";
 
-const PAGE_LIMIT = 20;
 const getKey = (pageIndex: number, previousPageData: { next: string, nfts: NftModel[] }) => {
 
     if (previousPageData && !previousPageData.nfts.length) return null // reached the end
-    // first page, we don't have `previousPageData`
-    const baseUrl = nftAPI.getNFTList('goerli', '0x85fD692D2a075908079261F5E351e7fE0267dB02');
-    if (pageIndex === 0) return baseUrl + `?limit=${PAGE_LIMIT}`
-    return baseUrl + `?next=${previousPageData.next}&limit=${PAGE_LIMIT}`                    // SWR key
+
+    const baseUrl = api.getNFTList('goerli', WALLET_ADDRESS);
+
+    // first page
+    if (pageIndex === 0) return baseUrl + `?limit=${PAGINATION_LIMIT}`
+    // next page
+    return baseUrl + `?next=${previousPageData.next}&limit=${PAGINATION_LIMIT}`                    // SWR key
 }
 
 const ListPage = () => {

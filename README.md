@@ -27,12 +27,12 @@ src/
 
 ### Router
 
-The / route will take you to the ListPage.
-The /detail/:contract/:id route will take you to the detail page.
+The / route will take you to the ListPage.  
+The /detail/:contract/:id route will take you to the detail page.  
 
 ### Web3 Related
 
-Web3-related code are placed in the src/components/web3providers folder. The application will attempt to access the MetaMask address; if it's invalid, a hardcoded address will be used.
+Web3-related code are placed in the src/components/web3provider.tsx. The application will attempt to access the MetaMask address; if it's invalid, a hardcoded address will be used.
 
 ### Author
 
